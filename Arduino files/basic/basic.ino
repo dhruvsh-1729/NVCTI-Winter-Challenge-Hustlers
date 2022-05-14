@@ -1,18 +1,22 @@
 #include <ESP8266WiFi.h>
 #include <Arduino.h>
 #include <WiFiClient.h>
-const char *ssid =  "Darshansh";     // replace with your wifi ssid and wpa2 key
-const char *pass =  "dhruvsh111";
+const char *ssid =  "";     // replace with your wifi ssid and wpa2 key
+const char *pass =  "";
 
-const int duration = 200;
-#define motor1in1 D6
-#define motor1in2 D7
+const int duration = 500;
+#define motor1in1 D1
+#define motor1in2 D2
 #define motor2in3 D3
 #define motor2in4 D4
-#define enable1 D5
-#define enable2 D2
+#define enable1 D0
+#define enable2 D5
+#define sjmotorin1 D6
+#define sjmotorin2 D7
+#define sjmotorenable D8
 
 int speed1=120,speed2=120;
+int sjmotspeed=120;
 
 WiFiServer server(80);
 
@@ -25,6 +29,9 @@ void setup()
        pinMode(motor2in4, OUTPUT);
        pinMode(enable1,OUTPUT);
        pinMode(enable2,OUTPUT);
+       pinMode(sjmotorin1,OUTPUT);
+       pinMode(sjmotorin2,OUTPUT);
+       pinMode(sjmotorenable,OUTPUT);
   
        delay(10);
                
@@ -76,6 +83,8 @@ void loop() {
             client.print("<a href=\"/Left\">Left</a>.<br>");
             client.print("<a href=\"/Right\">Right</a>.<br>");
             client.print("<a href=\"/Stop\">Stop</a>.<br>");
+            client.print("<a href=\"/UP\">UP</a>.<br>");
+            client.print("<a href=\"/DOWN\">DOWN</a>.<br>");
 
             // The HTTP response ends with another blank line:
             client.println();
@@ -192,6 +201,24 @@ void loop() {
           analogWrite(enable2,0);
           digitalWrite(motor2in3, LOW);
           digitalWrite(motor2in4, LOW);
+        }
+        if (currentLine.endsWith("GET /UP")) {
+          //FOR UP
+          analogWrite(sjmotorenable,0);
+          digitalWrite(sjmotorin1, HIGH);
+          digitalWrite(sjmotorin2, LOW);
+          delay(duration/2)
+          digitalWrite(sjmotorin1, LOW);
+          digitalWrite(sjmotorin2, LOW);
+        }
+             if (currentLine.endsWith("GET /DOWN")) {
+          //FOR DOWN
+          analogWrite(sjmotorenable,0);
+          digitalWrite(sjmotorin1, LOW);
+          digitalWrite(sjmotorin2,HIGH);
+          delay(duration/2)
+          digitalWrite(sjmotorin1, LOW);
+          digitalWrite(sjmotorin2, LOW);
         }
       }
     }
