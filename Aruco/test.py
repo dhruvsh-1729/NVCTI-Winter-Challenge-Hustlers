@@ -55,10 +55,10 @@ def findAruco(img, marker_size=7,total_markers=250,draw=True):
         if len(corners)==2:
             [x,y]=[m.fabs(center_list[0][0])-m.fabs(center_list[1][0]),m.fabs(center_list[0][1]-center_list[1][1])]
             while(angle<357 and angle>3):
-                if angle<357:
+                if angle<357 and angle>325:
                     r=rq.get(url="http://"+url+"/sright")
                     print("SR")
-                elif angle>3:
+                elif angle>3 and angle<45:
                     r=rq.get(url="http://"+url+"/sleft")
                     print("SL")
                     
