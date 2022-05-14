@@ -2,10 +2,15 @@ import cv2
 import cv2.aruco as aruco
 import numpy as np
 import math as m
+import requests as rq
 
-capture=cv2.VideoCapture(0)
+url='192.168.43.194'
+
+capture=cv2.VideoCapture(1)
+
 
 def findAruco(img, marker_size=7,total_markers=250,draw=True):
+    center_list=[]
     gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     key=getattr(aruco,f'DICT_ARUCO_ORIGINAL')
     arucoDict=aruco.Dictionary_get(key)
@@ -31,6 +36,8 @@ def findAruco(img, marker_size=7,total_markers=250,draw=True):
 
             cX = int((topLeft[0] + bottomRight[0]) / 2.0)
             cY = int((topLeft[1] + bottomRight[1]) / 2.0)
+            center=[cX,cY]
+            center_list.append(center)
             cv2.circle(img, (cX, cY), 4, (0, 0, 255), -1)
             mX = int((topRight[0] + bottomRight[0]) / 2.0)
             mY = int((topRight[1] + bottomRight[1]) / 2.0)
@@ -46,7 +53,7 @@ while True:
     ret,img=capture.read()
     # img=cv2.resize(img,(0,0),fx=0.5,fy=0.5)
     findAruco(img)
-      
+    
     if cv2.waitKey(1) & 0xFF== ord('q'):
         break
     cv2.imshow('Webcam',img)
