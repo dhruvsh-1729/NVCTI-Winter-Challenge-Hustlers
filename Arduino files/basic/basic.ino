@@ -1,7 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <Arduino.h>
 #include <WiFiClient.h>
-const char *ssid =  "";     // replace with your wifi ssid and wpa2 key
+const char *ssid =  "AndroidAP";     // replace with your wifi ssid and wpa2 key
 const char *pass =  "";
 
 const int duration = 500;
@@ -207,7 +207,7 @@ void loop() {
           analogWrite(sjmotorenable,0);
           digitalWrite(sjmotorin1, HIGH);
           digitalWrite(sjmotorin2, LOW);
-          delay(duration/2)
+          delay(duration/5);
           digitalWrite(sjmotorin1, LOW);
           digitalWrite(sjmotorin2, LOW);
         }
@@ -216,7 +216,7 @@ void loop() {
           analogWrite(sjmotorenable,0);
           digitalWrite(sjmotorin1, LOW);
           digitalWrite(sjmotorin2,HIGH);
-          delay(duration/2)
+          delay(duration/5);
           digitalWrite(sjmotorin1, LOW);
           digitalWrite(sjmotorin2, LOW);
         }
