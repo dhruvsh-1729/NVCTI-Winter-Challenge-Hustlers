@@ -7,7 +7,7 @@ import numpy as np
 
 url='192.168.43.194'
 
-capture=cv2.VideoCapture(0)
+capture=cv2.VideoCapture(1)
 
 def get_frame():
     ret,frame=capture.read()
@@ -15,6 +15,7 @@ def get_frame():
 
 def findAruco(img, marker_size=7,total_markers=250,draw=True):
     center_list=[]
+    angle_list=[]
     gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     key=getattr(aruco,f'DICT_ARUCO_ORIGINAL')
     arucoDict=aruco.Dictionary_get(key)
@@ -50,15 +51,16 @@ def findAruco(img, marker_size=7,total_markers=250,draw=True):
             angle=int(angle)
             if angle<0:
                 angle+=360
+            angle_list.append(angle)
             cv2.putText(img,f'{angle}',(cX-10,cY-10),cv2.FONT_HERSHEY_COMPLEX,1,(255,0,0),2,cv2.LINE_AA) 
             
         if len(corners)==2:
             [x,y]=[m.fabs(center_list[0][0])-m.fabs(center_list[1][0]),m.fabs(center_list[0][1]-center_list[1][1])]
-            while(angle<357 and angle>3):
-                if angle<357 and angle>325:
+            while(angle[0]<357 and angle[0]>3):
+                if angle[0]<357:
                     r=rq.get(url="http://"+url+"/sright")
                     print("SR")
-                elif angle>3 and angle<45:
+                elif angle[0]>3:
                     r=rq.get(url="http://"+url+"/sleft")
                     print("SL")
                     
