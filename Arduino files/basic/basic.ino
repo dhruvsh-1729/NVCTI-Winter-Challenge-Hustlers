@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include <WiFiClient.h>
 const char *ssid =  "AndroidAP";     // replace with your wifi ssid and wpa2 key
-const char *pass =  "";
+const char *pass =  "qwertyas";
 
 const int duration = 500;
 #define motor1in1 D1
