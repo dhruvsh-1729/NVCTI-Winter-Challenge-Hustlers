@@ -204,7 +204,7 @@ void loop() {
         }
         if (currentLine.endsWith("GET /UP")) {
           //FOR UP
-          analogWrite(sjmotorenable,0);
+          analogWrite(sjmotorenable,sjmotspeed);
           digitalWrite(sjmotorin1, HIGH);
           digitalWrite(sjmotorin2, LOW);
           delay(duration/5);
@@ -213,7 +213,7 @@ void loop() {
         }
              if (currentLine.endsWith("GET /DOWN")) {
           //FOR DOWN
-          analogWrite(sjmotorenable,0);
+          analogWrite(sjmotorenable,sjmotspeed);
           digitalWrite(sjmotorin1, LOW);
           digitalWrite(sjmotorin2,HIGH);
           delay(duration/5);
