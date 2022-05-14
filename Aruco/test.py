@@ -5,17 +5,13 @@ import math as m
 import requests as rq
 import numpy as np
 
-url='192.168.43.194'
+url='192.168.0.7'
 
 capture=cv2.VideoCapture(1)
 
-def get_frame():
-    ret,frame=capture.read()
-    return frame
-
 def findAruco(img, marker_size=7,total_markers=250,draw=True):
     center_list=[]
-    angle_list=[]
+    angle_dic={}
     gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     key=getattr(aruco,f'DICT_ARUCO_ORIGINAL')
     arucoDict=aruco.Dictionary_get(key)
@@ -23,7 +19,7 @@ def findAruco(img, marker_size=7,total_markers=250,draw=True):
     (corners, ids, rejected) = cv2.aruco.detectMarkers(img, arucoDict,
 	parameters=arucoParam)
 
-    print(ids)
+    # print(ids)
     if len(corners) > 0:
 	# flatten the ArUco IDs list
         ids = ids.flatten()
@@ -51,17 +47,59 @@ def findAruco(img, marker_size=7,total_markers=250,draw=True):
             angle=int(angle)
             if angle<0:
                 angle+=360
-            angle_list.append(angle)
+            angle_dic[markerID]=angle
             cv2.putText(img,f'{angle}',(cX-10,cY-10),cv2.FONT_HERSHEY_COMPLEX,1,(255,0,0),2,cv2.LINE_AA) 
             
-        if len(corners)==2:
-            [x,y]=[m.fabs(center_list[0][0])-m.fabs(center_list[1][0]),m.fabs(center_list[0][1]-center_list[1][1])]
-            while(angle[0]<357 and angle[0]>3):
-                if angle[0]<357:
+        # print(center_list)
+        # print(angle_dic)
+        
+        if len(ids)==2:
+            [x,y]=[int(m.fabs(center_list[0][0]-center_list[1][0])),int(m.fabs(center_list[0][1]-center_list[1][1]))]
+            print(x,y)
+            if(x>150 or y>150):
+                dis=m.sqrt(m.pow(x,2)+m.pow(y,2))
+                dis=int(dis)
+                print(dis)
+                theta=m.degrees(m.atan2(y,x))
+                theta=int(theta)
+                if theta<0:
+                    theta+=360
+                print(angle_dic[164],theta)
+
+                if(angle_dic[164]<(theta-5)):
                     r=rq.get(url="http://"+url+"/sright")
-                    print("SR")
-                elif angle[0]>3:
+                    print('SR')
+                    time.sleep(0.5)
+                elif(angle_dic[164]>(theta+5)):
                     r=rq.get(url="http://"+url+"/sleft")
-                    print("SL")
-                    
+                    print('SL')
+                    time.sleep(0.5)
+                elif(angle_dic[164]>(theta-5) or angle_dic[164]<(theta+5)):
+                    r=rq.get(url="http://"+url+"/Forward")
+                    print('F') 
+                    time.sleep(0.5)   
+            else:
+                if(angle_dic[164]<354 and angle_dic[164]>300):
+                    r=rq.get(url="http://"+url+"/sright")
+                    print('SR')
+                    time.sleep(0.5)
+                elif(angle_dic[164]>6 and angle_dic[164]<60):
+                    r=rq.get(url="http://"+url+"/sleft")
+                    print('SL')
+                    time.sleep(0.5)
+                elif(angle_dic[164]<=6 and angle_dic[164]>=354):
+                    r=rq.get(url="http://"+url+"/Forward")
+                    print('F')
+                    time.sleep(0.5)
+while True:
+    ret,img=capture.read()
+    # img=cv2.resize(img,(0,0),fx=0.5,fy=0.5)
+    findAruco(img)
+    
+    if cv2.waitKey(1) & 0xFF== ord('q'):
+        break
+    cv2.imshow('Webcam',img)
+
+capture.release()
+cv2.destroyAllWindows()                      
                 
