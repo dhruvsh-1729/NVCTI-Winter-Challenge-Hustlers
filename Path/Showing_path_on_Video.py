@@ -1,6 +1,7 @@
 import numpy as np
 import cv2 as cv
 from A_STAR import *
+from Avoiding_aruco_obstacles import *
 def find_grid_coord(i,j,coord,image_row,image_col):
     cr = image_row//num_row
     cl = image_col//num_col
@@ -44,7 +45,30 @@ def find_grid_coord(i,j,coord,image_row,image_col):
         coord[r-1][c] = 1
         coord[r-1][c-1] = 1
         coord[r-1][c+1] = 1  # this function will find all those points which are near to i,j and make their values one in coord matrix
-
+def optimise_route(route_coordinates):
+    route_coordinates.append([-1,-1])
+    i = 0
+    j = 1
+    Nroute_coordinates = []
+    while (j<len(route_coordinates)):
+        if route_coordinates[i][1]==route_coordinates[j][1]:
+            while (route_coordinates[j][1]==route_coordinates[i][1]):
+                j+=1
+            Nroute_coordinates.append(route_coordinates[i])
+            i = j-1
+            if (j==len(route_coordinates)-1):
+                Nroute_coordinates.append(route_coordinates[i])
+                break
+        else:
+            while route_coordinates[i][0]==route_coordinates[j][0]:
+                j+=1
+            Nroute_coordinates.append(route_coordinates[i])
+            i = j - 1
+            if (j==len(route_coordinates)-1):
+                Nroute_coordinates.append(route_coordinates[i])
+                break
+    route_coordinates.pop(len(route_coordinates)-1)
+    return Nroute_coordinates
 image_row = 600
 image_col = 600
 num_row = 10
@@ -67,10 +91,20 @@ def path_algorithm(image_specifications,map_specifications,img_init,source,desti
     num_row = map_specifications[0]
     num_col = map_specifications[1]
 
+    cr = image_row//num_row
+    cl = image_col//num_col
 
     # img_init = cv.imread(image_path)
 
     img = cv.resize(img_init, (image_col,image_row),interpolation = cv.INTER_NEAREST)
+    img2 = img.copy()
+    rowA,colA = source[0],source[1]
+    rowB,colB = destination[0],destination[1]
+    cv.circle(img,(colA*cl,rowA*cr),10,(0,0,255),2)
+    cv.circle(img,(colB*cl,rowB*cr),10,(255,0,0),2)
+    # cv.imshow("img",img)
+    # cv.waitKey(0)
+
     resize = cv.GaussianBlur(img,(11,11),cv.BORDER_DEFAULT)
 
     gray = cv.cvtColor(resize,cv.COLOR_BGR2GRAY)
@@ -132,6 +166,14 @@ def path_algorithm(image_specifications,map_specifications,img_init,source,desti
 
             find_grid_coord(i[0],i[1],the_map,image_row,image_col)
 
+
+        aruco_corners = findAruco(img2)
+        if len(aruco_corners)>0:
+            arucos_areas = whole_aruco_area(aruco_corners)
+            # print("aruco_boundary ",aruco_boundary)
+            for i in arucos_areas:
+                find_aruco_grid_coord(i[0],i[1],the_map,image_row,image_col,num_row,num_col)
+
         rowA,colA = source[0],source[1]
         rowB,colB = destination[0],destination[1]
         xA,yA = colA,rowA
@@ -165,7 +207,7 @@ def path_algorithm(image_specifications,map_specifications,img_init,source,desti
         for i in range(1,len(route_coordinates_converted)):
             a2 = route_coordinates_converted[i]
             a1 = route_coordinates_converted[i-1]
-            cv.line(img,(a1[1],a1[0]),(a2[1],a2[0]),(0, 0, 255), 2)
+            cv.line(img,(a1[1],a1[0]),(a2[1],a2[0]),(0, 255, 0), 2)
 
 
 
@@ -177,10 +219,12 @@ def path_algorithm(image_specifications,map_specifications,img_init,source,desti
         #     a,b = route_coordinates[i][0]*cr,route_coordinates[i][1]*cl
         #     route_coordinates_converted.append([a,b])
 
-        return img,route_coordinates_converted
+        new_route_coordinates_converted = optimise_route(route_coordinates_converted)
+        return img,new_route_coordinates_converted
 
 
-capture = cv.VideoCapture(1)
+
+capture = cv.VideoCapture("video.mp4")
 while True:
     isTrue,img_init = capture.read()
     print(isTrue)
