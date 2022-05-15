@@ -32,3 +32,31 @@ Then an emergency command will run which will stop the robot immediately and the
 
 # *PICKING UP THE STACKS*
 Once the robot reaches the destination stack Aruco, it goes underneath the stack stool and lifts it up using the automated scissor jack, which is made from welding the gear motor shaft to the double threaded screw of the scissor jack. Though we could not implement this before the deadline since it was not possible for us to make a custom stool such that our robot goes underneath it and lifts it up but still we have automated the entire process so if we had the stool and the stacks kept over it the system would still work perfectly fine.
+
+
+1. 
+  ![p1](https://user-images.githubusercontent.com/96870948/168494970-9ce14182-3b30-4502-b7bd-4468c915e881.png)
+
+The arena depicted above. Red dot representing the starting point and Blue dot representing the destination point and the other objects are the obstacles.
+
+
+
+2. 
+  ![p2](https://user-images.githubusercontent.com/96870948/168494995-21a272da-ee06-47d3-bd64-134ad73f6df9.png)
+
+Using Opencv, the obstacles are detected and rectangles are drawn around them.
+
+
+
+3. 
+  ![p3](https://user-images.githubusercontent.com/96870948/168495013-76d2fe3a-287a-4e45-959e-4df1dd9e8833.png)
+
+After getting the coordinates of the obstacles and feeding to the path finding algorithm , the shortest path is found out and then drawn it into the image.
+
+
+
+4. 
+  ![p4](https://user-images.githubusercontent.com/96870948/168495026-34cc66cd-3565-4044-a68c-b4742e3d30e2.png)
+
+These are the coordinates of the routes that are found out using the path finding algorithm.
+
