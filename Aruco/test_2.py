@@ -5,7 +5,7 @@ import math as m
 import requests as rq
 import numpy as np
 
-url='192.168.0.7'
+url='192.168.43.16'
 
 capture=cv2.VideoCapture(1)
 
@@ -54,36 +54,73 @@ def findAruco(img, marker_size=7,total_markers=250,draw=True):
         # print(angle_dic)
         
         if len(ids)==2:
-            [x,y]=[int(m.fabs(center_list[0][0]-center_list[1][0])-150),int(m.fabs(center_list[0][1]-center_list[1][1]))]
+            [x,y]=[int(m.fabs(center_list[0][0]-center_list[1][0])-100),int(m.fabs(center_list[0][1]-center_list[1][1]))]
             print(x,y)
 
-            if x>100:
-                if angle_dic[164]>0:
-                    while angle_dic[164]>0:
-                        r=rq.get(url="http://"+url+"/sleft")
-                        print('SL')
-                        time.sleep(0.2)
-                elif angle_dic[164]<0:
-                    while angle_dic[164]<0:
-                        r=rq.get(url="http://"+url+"/sright")
-                        print('SR')
-                        time.sleep(0.2)
-                r=rq.get(url="http://"+url+"/Forward") 
-                print('F')      
-            elif x<=100 and y>=0 and y<=10:
-                if angle_dic[164]>90:
-                    while angle_dic[164]>90:
-                        r=rq.get(url="http://"+url+"/sleft")
-                        print('SL')
-                        time.sleep(0.2)
-                elif angle_dic[164]<90:
-                    while angle_dic[164]<90:
-                        r=rq.get(url="http://"+url+"/sright")
-                        print('SR')
-                        time.sleep(0.2)
-                r=rq.get(url="http://"+url+"/Forward") 
-                print('F')  
+            if x>150 and y>=30:
                 
+                if angle_dic[164]>10 and angle_dic[164]<30:
+                    print(angle_dic[164])
+                    while angle_dic[164]>10:
+                        r=rq.get(url="http://"+url+"/sleft")
+                        print('SL')
+                        time.sleep(0.2)
+                elif angle_dic[164]<=350 and angle_dic[164]>330:
+                    print(angle_dic[164])
+                    while angle_dic[164]<=350:
+                        r=rq.get(url="http://"+url+"/sright")
+                        print('SR')
+                        time.sleep(0.2)
+                else: 
+                    print(angle_dic[164])       
+                    r=rq.get(url="http://"+url+"/Forward") 
+                    print('F')  
+                    print('Going straight')    
+            elif x<=150 and y>=30:
+                print(x,y)
+                if angle_dic[164]>100 and angle_dic[164]<120:
+                    print(angle_dic[164])
+                    while angle_dic[164]>100:
+                        r=rq.get(url="http://"+url+"/sleft")
+                        print('SL')
+                        time.sleep(0.2)
+                elif angle_dic[164]<80 and angle_dic[164]>60:
+                    print(angle_dic[164])
+                    while angle_dic[164]<80:
+                        r=rq.get(url="http://"+url+"/sright")
+                        print('SR')
+                        time.sleep(0.2)
+                else:        
+                    print(angle_dic[164])
+                    r=rq.get(url="http://"+url+"/Forward") 
+                    print('F')  
+            elif x<0 and y<=30 and x>-60:
+                
+                if angle_dic[164]>10 and angle_dic[164]<70:
+                    print(angle_dic[164])
+                    while angle_dic[164]>5:
+                        r=rq.get(url="http://"+url+"/sleft")
+                        print('SL')
+                        time.sleep(0.2)
+                    r=rq.get(url="http://"+url+"/Forward")
+                    print('F')
+                    time.sleep(0.2)
+                    r=rq.get(url="http://"+url+"/Forward")
+                    print('F')
+                    time.sleep(0.2)
+                    for i in range(20):
+                        r=rq.get(url="http://"+url+"/DOWN")
+                    time.sleep(4)
+                    for i in range(20):
+                        r=rq.get(url="http://"+url+"/UP")
+                    
+                else:        
+                    print(angle_dic[164])
+                    r=rq.get(url="http://"+url+"/Forward")    
+                    print('F')
+                    
+            
+
 while True:
     ret,img=capture.read()
     # img=cv2.resize(img,(0,0),fx=0.5,fy=0.5)
@@ -95,4 +132,5 @@ while True:
 
 capture.release()
 cv2.destroyAllWindows()                      
+                                      
                 
