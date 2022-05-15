@@ -16,16 +16,16 @@ h = the estimated movement cost to move from that given square on the grid to th
 
 We will be having a camera(in this case we are using the open-source DroidCam Client connected through common wifi network) mounted on the top of the arena which will be taking live feed of the dynamic environment of the arena and feed each frames to the path algorithm code. In each frames , we will be having some obstacles in the arena and two arucos, one representing the robot and the other representing the stack.
 
-# *WORKING OF THE PATH PLANNING ALGORITHM
+# *WORKING OF THE PATH PLANNING ALGORITHM*
 
 In the path algorithm code, first we will be using powerful Computer vision library called as OpenCV. Using the library,
 the code would convert those images into a num_rows by num_cols grid and then detect the coordinates of obstacles in the arena and also the coordinates of two arucos ,according to the grid and then feed those coordinates into the A-Star (path-finding) algorithm. The A-Star ,then returns the coordinates of all those points which will be forming a shortest path from the robot to the stack, avoiding the obstacles.
 
-# *WORKING OF ARUCO MARKER
+# *WORKING OF ARUCO MARKER*
 
 Two Aruco markers of known ids were generated and printed from an online resource. Then, using the opencv-contrib-python library which has the cv2.aruco library, programming it for the ORIGINAL_ARUCO markers, we are able to identify the markers in the frame received and are able to write code to get the coordinates of the corners, centers of the markers and the orientation or the polar angle of the markers in degrees. Using all of this data we have written the code such that aruco on the robot makes the robot chase the aruco on the stacks in the same frame. Hence, making the movement of the robot autonomous.
 
-# *HANDLING THE DYNAMIC ENVIRONMENT
+# *HANDLING THE DYNAMIC ENVIRONMENT*
 
 Using the A-Star algorithm , we would be handling the dynamic environment of the arena. Suppose during the robot movement ,following the shortest path, an obstacle suddenly comes in its path.
 Then an emergency command will run which will stop the robot immediately and then the robot waits for some specific time for the obstacle to get away. If the obstacle gets away then the robot will follow the same path to reach its destination. But if it doesnt move , then the path finding code will run again and calculates a new shortest path and then the robot will follow that new path. Thus , in this way we will be handling the dynamic environment. 
