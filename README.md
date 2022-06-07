@@ -1,5 +1,10 @@
 # NVCTI Winter Challenge-Warehouse Automation Prototype
 
+Team Members
+1. Ashutosh Singh
+2. Arunim Basak
+3. Dhruv Shah
+4. Ayush Gupta
 # *PATH ALGORITHM*
 
 The path algorithm used for estimating the shortest path that will be followed by the bot to reach from one stack to another stack is A-Star.
