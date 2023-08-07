@@ -11,11 +11,12 @@ url='192.168.43.194'
 def findAruco(img, marker_size=7,total_markers=250,draw=True):
     center_list=[]
     gray=cv.cvtColor(img,cv.COLOR_BGR2GRAY)
-    key=getattr(aruco,f'DICT_ARUCO_ORIGINAL')
-    arucoDict=aruco.Dictionary_get(key)
-    arucoParam=aruco.DetectorParameters_create()
-    (corners, ids, rejected) = cv.aruco.detectMarkers(img, arucoDict,
-	parameters=arucoParam)
+    
+    dictionary = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
+    parameters =  aruco.DetectorParameters()
+    detector = aruco.ArucoDetector(dictionary, parameters)
+
+    corners, ids, rejected = detector.detectMarkers(gray)
     aruco_corners = []
     # print(ids)
     if len(corners) > 0:
