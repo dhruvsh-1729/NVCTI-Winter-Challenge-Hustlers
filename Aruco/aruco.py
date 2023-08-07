@@ -4,19 +4,26 @@ import numpy as np
 import math as m
 import requests as rq
 
-url='192.168.43.194'
+capture=cv2.VideoCapture(0)
 
-capture=cv2.VideoCapture(1)
+# dictionary = cv.aruco.getPredefinedDictionary(cv.aruco.DICT_4X4_250)
+# parameters =  cv.aruco.DetectorParameters()
+# detector = cv.aruco.ArucoDetector(dictionary, parameters)
+
+# frame = cv.imread(...)
+
+# markerCorners, markerIds, rejectedCandidates = detector.detectMarkers(frame)
 
 
 def findAruco(img, marker_size=7,total_markers=250,draw=True):
     center_list=[]
     gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-    key=getattr(aruco,f'DICT_ARUCO_ORIGINAL')
-    arucoDict=aruco.Dictionary_get(key)
-    arucoParam=aruco.DetectorParameters_create()
-    (corners, ids, rejected) = cv2.aruco.detectMarkers(img, arucoDict,
-	parameters=arucoParam)
+
+    dictionary = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
+    parameters =  aruco.DetectorParameters()
+    detector = aruco.ArucoDetector(dictionary, parameters)
+
+    corners, ids, rejected = detector.detectMarkers(gray)
 
     print(ids)
     if len(corners) > 0:
